@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - Student</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #34a853;
+            --accent-color: #fbbc04;
+            --text-dark: #202124;
+            --text-light: #5f6368;
+            --bg-light: #8db8e2;
+            --bg-white: #ffffff;
+            --border-color: #dadce0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--bg-white);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #4285f4 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header .title {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .header .location {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        /* Main Content Grid */
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .main-column {
+            grid-column: 1 / 2;
+        }
+
+        .sidebar {
+            grid-column: 2 / 3;
+            padding-left: 20px;
+            border-left: 2px solid var(--border-color);
+        }
+
+        /* Section Styles */
+        section {
+            margin-bottom: 35px;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-color);
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .job-title {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .company {
+            color: var(--text-light);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .dates {
+            color: var(--text-light);
+            font-size: 0.9em;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        /* Bullet Points */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding-left: 20px;
+            margin-bottom: 8px;
+            position: relative;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        ul li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        /* Skills Section */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background-color: var(--bg-light);
+            color: black;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 25px;
+            }
+
+            .sidebar {
+                grid-column: 1;
+                border-left: none;
+                border-top: 2px solid var(--border-color);
+                padding-left: 0;
+                padding-top: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                border-radius: 4px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Calvin Whitaker Hancock</h1>
+            <div class="title">Information Systems Student</div>
+            <div class="location">Provo, Utah</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Left Column -->
+            <div class="main-column">
+                <section>
+                    <h2>Education</h2>
+                    <h3>Brigham Young University</h3>
+                    <div class="company">BS Information Systems | Minor in Linguistics</div>
+                    <div class="dates">Sophomore | GPA: 3.8</div>
+                    <div style="color: var(--text-light); font-size: 0.95em; margin-top: 10px;">
+                        <strong>Relevant Coursework:</strong> Information Systems (IS 201), Linguistics (LING 201), Economics (ECON 110), Finance (FIN 201), Accounting (ACC 200, 310)
+                    </div>
+                </section>
+                <section>
+                    <h2>Experience</h2>
+                    <h3 class="job-title">Server</h3>
+                    <div class="company">Brick Oven, Provo, UT</div>
+                    <div class="dates">2019-2022, 2024-2025 (5 Years)</div>
+                    <ul>
+                        <li>Managed multiple tables simultaneously during peak hours, maintaining high service standards</li>
+                        <li>Trained and mentored new staff on service protocols and customer engagement</li>
+                        <li>Achieved consistent positive customer feedback and repeat clientele</li>
+                        <li>Collaborated with kitchen and management teams to ensure smooth daily operations</li>
+                        <li>Handled cash transactions and point-of-sale systems with accuracy</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Projects & Interests</h2>
+                    <h3>Writing System Reform</h3>
+                    <div style="color: var(--text-light); margin-bottom: 12px;">Research & Exploration</div>
+                    <p style="color: var(--text-dark); margin-bottom: 10px;">Exploring alternative writing systems and orthographic reforms, combining information systems and computational linguistics perspectives to address standardization challenges.</p>
+                    
+                    <h3 style="margin-top: 18px;">Tabletop RPGs & Strategy Games</h3>
+                    <div style="color: var(--text-light); margin-bottom: 12px;">Participant & Game Master</div>
+                    <ul>
+                        <li>Warhammer 40K enjoyer, liking complex rules and tactical planning</li>
+                        <li>Designing and running custom narrative and game mechanics in D&D-likes</li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Right Column (Sidebar) -->
+            <div class="sidebar">
+                <section>
+                    <h2>Technical Skills</h2>
+                    <div class="skills-container">
+                        <span class="skill-tag">HTML/CSS</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Excel</span>
+                        <span class="skill-tag">Google Suite</span>
+                    </div>
+                </section>
+                <section>
+                    <h2>Analytical Skills</h2>
+                    <ul>
+                        <li>Systems thinking</li>
+                        <li>Data analysis</li>
+                        <li>Financial concepts</li>
+                        <li>Computational linguistics</li>
+                        <li>Problem solving</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Soft Skills</h2>
+                    <ul>
+                        <li>Customer service</li>
+                        <li>Communication</li>
+                        <li>Teamwork & collaboration</li>
+                        <li>Time management</li>
+                        <li>Leadership</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Languages</h2>
+                    <ul>
+                        <li>English (Native)</li>
+                        <li>Mandarin (Conversational)</li>
+                        <li>Interest in linguistic diversity & writing systems</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Interests</h2>
+                    <ul>
+                        <li>Programming language design</li>
+                        <li>Writing system standardization</li>
+                        <li>Tabletop gaming & strategy</li>
+                        <li>Financial systems</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Achievements</h2>
+                    <ul>
+                        <li>Participant in the 2018 and 2019 USA Youth National Championships for Olympic Weightlifting</li>
+                        <li>Served 2 years as a missionary in the California Arcadia mission</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

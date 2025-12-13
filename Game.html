@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Air Mixing Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: #e2e8f0;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #60a5fa;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 0.95em;
+        }
+
+        .viz-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .viz-box {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            border: 2px solid #334155;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .viz-title {
+            background: linear-gradient(90deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .controls {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .controls h2 {
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            color: #93c5fd;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: #1d4ed8;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(15, 23, 42, 0.5);
+            background: #2563eb;
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.6);
+        }
+
+        button.secondary {
+            background: #6b21a8;
+        }
+
+        button.secondary:hover {
+            background: #7e22ce;
+        }
+
+        button.danger {
+            background: #b91c1c;
+        }
+
+        button.danger:hover {
+            background: #dc2626;
+        }
+
+        .legend {
+            margin-top: 12px;
+            font-size: 0.85em;
+            color: #cbd5e1;
+            text-align: left;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .legend ul {
+            list-style: none;
+        }
+
+        .legend li {
+            margin-bottom: 6px;
+        }
+
+        .legend span.color {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+
+        .legend .exhale {
+            background: #3b82f6;
+        }
+
+        .legend .inhale {
+            background: #f97316;
+        }
+
+        .legend .mixed {
+            background: #a855f7;
+        }
+
+        /* NEW: score display styling */
+        .top-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .score-display {
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid #1f2937;
+            background: rgba(15, 23, 42, 0.9);
+            color: #f9fafb;
+            font-size: 0.9em;
+            font-weight: 600;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .score-display span {
+            color: #facc15;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Breathing Air Mixing Visualization</h1>
+        <p>
+            Click "Start Game" to begin. Use the "Exhale" button to shoot blue particles in a focused beam to the right.
+            Press "Inhale" to briefly draw particles back toward the center mouth. Try to manage the air without
+            losing too many points!
+        </p>
+    </div>
+
+    <div class="viz-container">
+        <div class="viz-box">
+            <div class="viz-title">Air Mixing Field</div>
+            <canvas id="breathingCanvas" width="900" height="450"></canvas>
+        </div>
+    </div>
+
+    <div class="controls">
+        <h2>Controls</h2>
+
+        <!-- NEW: top row with reset and score -->
+        <div class="top-row">
+            <div class="button-row">
+                <button id="startBtn">
+                    ▶ Start Game
+                </button>
+                <button id="exhaleBtn" class="secondary">
+                    💨 Exhale
+                </button>
+                <button id="inhaleBtn">
+                    🌀 Inhale
+                </button>
+                <button id="resetBtn" class="danger">
+                    ⟳ Reset Game
+                </button>
+            </div>
+
+            <div class="score-display">
+                Score: <span id="scoreValue">0</span>
+            </div>
+        </div>
+
+        <div class="legend">
+            <p>
+                You lose 10 points every half second while the game runs.  
+                Pressing "Inhale" grants +100 points if done within 2 seconds of an Exhale, but any particles you actually pull back into
+                the mouth cost points, with fresher particles penalized more heavily.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    class BreathingGame {
+        constructor(canvasId) {
+            this.canvas = document.getElementById(canvasId);
+            this.ctx = this.canvas.getContext('2d');
+            this.particles = [];
+            this.gameRunning = false;
+
+            // SCORING
+            this.score = 0;
+            this.inhaled = 0;
+            this.scoreElement = document.getElementById('scoreValue');
+            this.frameCount = 0; // used to time the −10 every 0.5 s
+
+            this.mouthX = this.canvas.width / 2;
+            this.mouthY = this.canvas.height / 2;
+
+            this.inhaleDuration = 0; // frames remaining in inhale phase
+            this.lastExhaleTime = 0;
+        }
+
+        setScore(value) {
+            this.score = value;
+            this.scoreElement.textContent = Math.round(this.score);
+        }
+
+        changeScore(delta) {
+            this.setScore(this.score + delta);
+        }
+
+        createExhaleParticles() {
+            const particleCount = 120;
+            this.lastExhaleTime = performance.now();
+            for (let i = 0; i < particleCount; i++) {
+                const angle = (Math.random() - 0.5) * 0.3; // narrow cone
+                const speed = 5 + Math.random() * 3;
+
+                this.particles.push({
+                    x: this.mouthX,
+                    y: this.mouthY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1,
+                    size: 4 + Math.random() * 3,
+                    hue: 200 + Math.random() * 40,
+                    isInhaling: false,
+                    ageFrames: 0 // track freshness for penalty tuning if wanted
+                });
+            }
+        }
+
+        inhalePulse() {
+            const now = performance.now();
+            const timeSinceExhale = now - this.lastExhaleTime;
+            if (timeSinceExhale < 2000) {this.score += 100;}
+            this.inhaleDuration = 30;
+        }
+
+        update() {
+            if (!this.gameRunning) {
+                return;
+            }
+
+            const friction = 0.995;
+            const bounce = 0.85;
+
+            // Frame counter for periodic score penalty
+            this.frameCount++;
+
+            // Every ~30 frames at 60 FPS ≈ 0.5 seconds
+            if (this.frameCount % 30 === 0) {
+                this.changeScore(-10);
+            }
+
+            if (this.inhaleDuration > 0) {
+                this.inhaleDuration--;
+            }
+
+            this.particles.forEach((p, i) => {
+                // If in inhale phase, apply inward velocity
+                if (this.inhaleDuration > 0) {
+                    const dx = this.mouthX - p.x;
+                    const dy = this.mouthY - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                    const speed = 4;
+                    p.vx += (dx / dist) * (speed / 60); // gentle continuous pull
+                    p.vy += (dy / dist) * (speed / 60);
+                }
+
+                // Friction
+                p.vx *= friction;
+                p.vy *= friction;
+
+                // Position
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Wall bouncing
+                if (p.x - p.size < 0) {
+                    p.x = p.size;
+                    p.vx = Math.abs(p.vx) * bounce;
+                }
+                if (p.x + p.size > this.canvas.width) {
+                    p.x = this.canvas.width - p.size;
+                    p.vx = -Math.abs(p.vx) * bounce;
+                }
+                if (p.y - p.size < 0) {
+                    p.y = p.size;
+                    p.vy = Math.abs(p.vy) * bounce;
+                }
+                if (p.y + p.size > this.canvas.height) {
+                    p.y = this.canvas.height - p.size;
+                    p.vy = -Math.abs(p.vy) * bounce;
+                }
+
+                // Track age for potential extra weighting
+                p.ageFrames++;
+
+                // Check collection near mouth when inhale phase active
+                const dxm = this.mouthX - p.x;
+                const dym = this.mouthY - p.y;
+                const distMouth = Math.sqrt(dxm * dxm + dym * dym);
+                if (this.inhaleDuration > 0 && distMouth < 25) {
+                    // Penalty scales with freshness (life in [0,1])
+                    // Fresh (life ~1) -> about 35 points, older less.
+                    const penalty = Math.round(p.life + 5)*0.10;
+                    this.changeScore(-penalty);
+
+                    this.inhaled++;
+                    this.particles.splice(i, 1);
+                    return;
+                }
+
+                // Very slow fading
+                p.life -= 0.002;
+            });
+
+            this.particles = this.particles.filter(p => p.life > 0);
+        }
+
+        draw() {
+            // Clear background
+            this.ctx.fillStyle = '#0f172a';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // Mouth
+            this.ctx.fillStyle = '#4b5563';
+            this.ctx.fillRect(this.mouthX - 10, this.mouthY - 20, 20, 40);
+            this.ctx.strokeStyle = '#10b981';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(this.mouthX, this.mouthY, 30, 0, Math.PI * 2);
+            this.ctx.stroke();
+
+            // Particles
+            this.particles.forEach(p => {
+                this.ctx.globalAlpha = Math.max(p.life, 0) * 0.8;
+                this.ctx.fillStyle = `hsl(${p.hue}, 100%, 50%)`;
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                this.ctx.fill();
+            });
+            this.ctx.globalAlpha = 1;
+        }
+
+        animate() {
+            this.update();
+            this.draw();
+            if (this.gameRunning) {
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        start() {
+            if (this.gameRunning) return;
+            this.gameRunning = true;
+            this.animate();
+        }
+
+        reset() {
+            this.gameRunning = false;
+            this.particles = [];
+            this.inhaleDuration = 0;
+            this.frameCount = 0;
+            this.inhaled = 0;
+            this.setScore(0);
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.draw();
+        }
+    }
+
+    const game = new BreathingGame('breathingCanvas');
+
+    // Wire up buttons
+    document.getElementById('startBtn').addEventListener('click', () => {
+        game.start();
+    });
+
+    document.getElementById('exhaleBtn').addEventListener('click', () => {
+        if (!game.gameRunning) return;
+        game.createExhaleParticles();
+    });
+
+    document.getElementById('inhaleBtn').addEventListener('click', () => {
+        if (!game.gameRunning) return;
+        game.inhalePulse();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        game.reset();
+    });
+
+    // Initial draw
+    game.draw();
+</script>
+</body>
+</html>
